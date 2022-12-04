@@ -9,7 +9,7 @@ ranges = [[[int(n) for n in l] for l in s] for s in ranges]
 
 # Part 1
 def contains(a,b):
-    # Returns true if a is contained in b
+    # Returns true if b is contained in a
     return (a[0] <= b[0]) and (a[1] >= b[1])
 
 assignments_contains = [contains(a,b) or contains(b,a) for (a,b) in ranges]
@@ -18,7 +18,7 @@ print('Number of assigments contained in another:', sum(assignments_contains))
 
 # Part 2
 def overlaps(a,b):
-    # Returns true of a and b overlaps
+    # Returns true if a and b overlaps
     return max([a[0],b[0]]) <= min([a[1],b[1]])
 
 assignments_overlaps = [overlaps(a,b) for (a,b) in ranges]

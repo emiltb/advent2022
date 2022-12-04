@@ -12,7 +12,7 @@ def contains(a,b):
     # Returns true if a is contained in b
     return (a[0] <= b[0]) and (a[1] >= b[1])
 
-assignments_contains = [contains(s[0],s[1]) or contains(s[1],s[0]) for s in ranges]
+assignments_contains = [contains(a,b) or contains(b,a) for (a,b) in ranges]
 
 print('Number of assigments contained in another:', sum(assignments_contains))
 
@@ -21,6 +21,6 @@ def overlaps(a,b):
     # Returns true of a and b overlaps
     return max([a[0],b[0]]) <= min([a[1],b[1]])
 
-assignments_overlaps = [overlaps(s[0],s[1]) for s in ranges]
+assignments_overlaps = [overlaps(a,b) for (a,b) in ranges]
 
 print('Number of assigments overlapping eachother:', sum(assignments_overlaps))

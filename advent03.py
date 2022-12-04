@@ -17,7 +17,8 @@ print('Total priority of items:', total_priority)
 
 # Part 2
 elf_groups = zip(*(iter(rucksacks),) * 3)
-common_items_per_group = [''.join(set(s[0]) & set(s[1]) & set(s[2])) for s in elf_groups]
+elf_group_sets = [[set(s) for s in l] for l in elf_groups]
+common_items_per_group = [''.join(set.intersection(*s)) for s in elf_group_sets]
 
 total_priority_for_badges = sum([letters[s] for s in common_items_per_group])
 print('Total priority of badges:', total_priority_for_badges)

@@ -5,7 +5,7 @@ with open('inputs/input04.txt', 'r') as f:
 assignments = [s.strip().split(',') for s in data]
 # Separate range endpoints and convert strings to integers
 ranges = [[s.split('-') for s in d] for d in assignments]
-ranges = [[[int(l[0]),int(l[1])] for l in s] for s in ranges]
+ranges = [[[int(n) for n in l] for l in s] for s in ranges]
 
 # Part 1
 def contains(a,b):

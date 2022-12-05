@@ -36,8 +36,10 @@ stacks_part2 = deepcopy(stacks)
 
 
 def move2(n, src, dst):
-    stacks_part2[dst - 1].append(stacks_part2[src - 1][-n:])
-    stacks_part2[src - 1] = stacks_part2[src - 1][:-n]
+    pick_items = stacks_part2[src - 1][-n:]
+    for _ in range(n):
+        stacks_part2[src - 1].pop()
+    stacks_part2[dst - 1] = stacks_part2[dst - 1] + pick_items
 
 
 # Perform all movements

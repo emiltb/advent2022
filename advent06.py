@@ -12,18 +12,17 @@ def find_code(data, width):
 
     for i, code in enumerate(objslider):
         if len(set(code)) == width:
-            print(i, code)
             endpos = i + width
             break
-    return endpos
+    return endpos, code
 
 with open("inputs/input06.txt", "r") as f:
     data = f.read()
 
 # Part 1
-first_marker = find_code(data, 4)
-print("First marker:", first_marker)
+first_marker, code = find_code(data, 4)
+print("First marker at", first_marker, code)
 
 # Part 2
-first_message = find_code(data, 14)
-print("First message:", first_message)
+first_message, code = find_code(data, 14)
+print("First message at", first_message, code)

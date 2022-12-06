@@ -3,18 +3,16 @@ def slider(obj, w):
     yield window
 
     for s in obj[w:]:
-        window = window[1:]
-        window += s
+        window = window[1:] + s
         yield window
 
 def find_code(data, width):
     objslider = slider(data, width)
 
     for i, code in enumerate(objslider):
-        if len(set(code)) == width:
-            endpos = i + width
+        if len(set(code)) == len(code):
             break
-    return endpos, code
+    return i + width, code
 
 with open("inputs/input06.txt", "r") as f:
     data = f.read()

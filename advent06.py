@@ -1,6 +1,5 @@
 with open("inputs/input06.txt", "r") as f:
     data = f.read()
-data
 
 def slider(obj, w):
     window = obj[:w]

@@ -61,4 +61,5 @@ need_to_delete = space_needed - (total_size - space_used)
 
 delete_candidates = [f for f in folder_sizes if f[1] > need_to_delete]
 delete_candidates.sort(key = lambda x : x[1])
+
 print('Smallest directory that, if deleted, would free up enough space on the filesystem to run the update:', delete_candidates[0])

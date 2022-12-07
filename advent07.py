@@ -1,3 +1,6 @@
+from itertools import zip_longest
+
+
 with open("inputs/input07.txt", "r") as f:
     data = f.readlines()
 
@@ -31,15 +34,22 @@ for l in terminal:
     else:
         parse_content(l)
 
+possible_paths = ['/']
+for p in [c[0].split('/') for c in contents]:
+    print(p)
+    paths = []
+    path = ''
+    for d in p:
+        if d != '':
+            path = path + '/' + d
+            paths.append(path)
+    possible_paths.append(paths)
 
-folders = {p[0] for p in contents}
+folders = {p for p in possible_paths for p in p}
 
 folder_sizes = []
 for c in folders:
-    print(c)
-    print([x[1] for x in contents if x[0].startswith(c)])
-    print("---")
     folder_sizes.append([c, sum([x[1] for x in contents if x[0].startswith(c)])])
-
+folder_sizes
 sum_of_folders_to_delete = sum([f[1] for f in folder_sizes if f[1] <= 100000])
 sum_of_folders_to_delete

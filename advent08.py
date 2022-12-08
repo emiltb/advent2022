@@ -53,10 +53,7 @@ for (x, y), h in np.ndenumerate(data):
     above = np.flip(h > data[:x, y])    # Above
     below = h > data[(x + 1) :, y]      # Below
 
-    scores = [count_trees(left), 
-              count_trees(right), 
-              count_trees(above), 
-              count_trees(below)]
+    scores = [count_trees(v) for v in [left,right,above,below]]
 
     scenic_score[x, y] = reduce(lambda x, y: x*y, scores)
 

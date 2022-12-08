@@ -12,7 +12,7 @@ len_y, len_x = data.shape
 # From each tree find the vector of tree that extend in all four directions
 # If all the trees in a direction a smaller than the current tree, it can be
 # seen from the outside.
-# We only need it accessible from one of the four directions. 
+# We only need it accessible from one of the four directions.
 n_visible = 0
 for (x, y), h in np.ndenumerate(data):
     if (x == 0) or (y == 0) or (x == len_x - 1) or (y == len_y - 1):
@@ -20,9 +20,9 @@ for (x, y), h in np.ndenumerate(data):
         n_visible += 1
     else:
         left = np.all(h > data[x, :y])          # Left
-        right = np.all(h > data[x, (y + 1) :])  # right
+        right = np.all(h > data[x, (y + 1):])  # right
         above = np.all(h > data[:x, y])         # Above
-        below = np.all(h > data[(x + 1) :, y])  # Below
+        below = np.all(h > data[(x + 1):, y])  # Below
 
         if np.any([left, right, above, below]):
             n_visible += 1
@@ -43,17 +43,18 @@ def count_trees(vec):
             break
     return trees
 
+
 # Iterate over all trees and calculate the scenic score for each
-# Vectors are found in a similar fashion to above, but left and above 
-# are flipped, as the order of elements is important here. 
+# Vectors are found in a similar fashion to above, but left and above
+# are flipped, as the order of elements is important here.
 scenic_score = np.zeros(data.shape)
 for (x, y), h in np.ndenumerate(data):
     left = np.flip(h > data[x, :y])     # Left
-    right = h > data[x, (y + 1) :]      # Right
+    right = h > data[x, (y + 1):]      # Right
     above = np.flip(h > data[:x, y])    # Above
-    below = h > data[(x + 1) :, y]      # Below
+    below = h > data[(x + 1):, y]      # Below
 
-    scores = [count_trees(v) for v in [left,right,above,below]]
+    scores = [count_trees(v) for v in [left, right, above, below]]
 
     scenic_score[x, y] = reduce(lambda x, y: x*y, scores)
 

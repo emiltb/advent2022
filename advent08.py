@@ -1,22 +1,27 @@
 import numpy as np
+from functools import reduce
 
 with open("inputs/input08.txt", "r") as f:
     raw_data = f.readlines()
 
-data = np.array([[c for c in s.strip()] for s in raw_data])
-data
+# Read the data into a numpy array
+data = np.array([[c for c in s.strip()] for s in raw_data]).astype(int)
 len_y, len_x = data.shape
 
 # Part 1
+# From each tree find the vector of tree that extend in all four directions
+# If all the trees in a direction a smaller than the current tree, it can be
+# seen from the outside.
+# We only need it accessible from one of the four directions. 
 n_visible = 0
 for (x, y), h in np.ndenumerate(data):
     if (x == 0) or (y == 0) or (x == len_x - 1) or (y == len_y - 1):
         # We are at an edge
         n_visible += 1
     else:
-        left = np.all(h > data[x, :y])  # Left
+        left = np.all(h > data[x, :y])          # Left
         right = np.all(h > data[x, (y + 1) :])  # right
-        above = np.all(h > data[:x, y])  # Above
+        above = np.all(h > data[:x, y])         # Above
         below = np.all(h > data[(x + 1) :, y])  # Below
 
         if np.any([left, right, above, below]):
@@ -26,40 +31,30 @@ print("Number of visible trees:", n_visible)
 
 
 # Part 2
-x = 0
-y = 0
-data[x, y]
-data[x, :y]  # left
-data[x, y] > data[x, :y]  # Left
-data[x, y] > data[x, (y + 1) :]  # Right
-data[x, y] > data[:x, y]  # Above
-data[x, y] > data[(x + 1) :, y]  # Below
-data
-right = data[x, y] > data[x, (y + 1) :]  # Above
-np.argmax(right)
+# Function that iterates over a vector of trees and counts the number of
+# trees that can be seen
+def count_trees(vec):
+    trees = 0
+    for n in vec:
+        if n == True:
+            trees += 1
+        elif n == False:
+            trees += 1
+            break
+    return trees
 
+# Iterate over all trees and calculate the scenic score for each
+# Vectors are found in a similar fashion to above, but left and above 
+# are flipped, as the order of elements is important here. 
 scenic_score = np.zeros(data.shape)
 for (x, y), h in np.ndenumerate(data):
-    left = np.flip(data[x, y] > data[x, :y])  # Above
-    right = data[x, y] > data[x, (y + 1) :]  # Above
-    above = np.flip(data[x, y] > data[:x, y])  # Above
-    below = data[x, y] > data[(x + 1) :, y]  # Above
+    left = np.flip(h > data[x, :y])     # Left
+    right = h > data[x, (y + 1) :]      # Right
+    above = np.flip(h > data[:x, y])    # Above
+    below = h > data[(x + 1) :, y]      # Below
 
-    n1, n2, n3, n4 = 0, 0, 0, 0
-    if left.size != 0:
-        n1 = np.argmax(left == False) + 1
+    scores = [count_trees(left), count_trees(right), count_trees(above), count_trees(below)]
 
-    if right.size != 0:
-        n2 = np.argmax(right == False) + 1
+    scenic_score[x, y] = reduce(lambda x, y: x*y, scores)
 
-    if above.size != 0:
-        n3 = np.argmax(above == False) + 1
-
-    if below.size != 0:
-        n4 = np.argmax(below == False) + 1
-
-    scenic_score[x, y] = n1 * n2 * n3 * n4
-
-scenic_score
-np.argmax((data[0, 0] > data[0, :0]) == False) + 1
-np.argmax((data[0, 0] > data[0, 1:]) == False) + 1
+print('Maximum scenic score in forest:', scenic_score.max())

@@ -39,7 +39,8 @@ print("Number of unique positions held by tail:", len(T_log_set))
 
 
 # Part 2
-
+# Solution is basically identical, except each part of the rope has to track
+# the previous section
 R_pos = [[0, 0] for n in range(10)]
 T_log = []
 

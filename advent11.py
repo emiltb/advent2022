@@ -9,7 +9,7 @@ with open("inputs/input11.txt", "r") as f:
 data = [s.strip() for s in input]
 monkeys_raw = [list(group) for k, group in groupby(data, lambda x: x == "") if not k]
 
-
+# Define a Monkey class to handle keeping track of items, interactions, catches and throws
 class Monkey:
     def __init__(self, name, items, op, test, test_true, test_false) -> None:
         self.name = name.split(":")[0]
@@ -21,13 +21,10 @@ class Monkey:
         self.n_inspect = 0
 
     def take_turn(self):
-        # print(f"{self.name} takes its turn")
         items_copy = self.items.copy()
         for i in items_copy:
-            # print(f"Do something with item {i}")
             new_value = self.inspect(i)
             relief_value = self.worry_relief(new_value)
-            # print(f"Item gets new value {relief_value}")
             if relief_value % self.test == 0:
                 self.throw(relief_value, self.test_true)
             else:
@@ -41,11 +38,9 @@ class Monkey:
 
     def throw(self, item, target):
         self.items.pop(0)
-        # print(f"Throw {item} to monkey {target}")
         monkeys[target].catch(item)
 
     def catch(self, item):
-        # print(f"{self.name} received {item}")
         self.items.append(item)
 
     def worry_relief(self, w):
@@ -67,10 +62,18 @@ for i in range(20):
 
 n_inspections = [m.n_inspect for m in monkeys]
 n_inspections.sort()
-print("Amount of monkey business:", n_inspections[-1] * n_inspections[-2])
+print(
+    "Amount of monkey business after 20 rounds:", n_inspections[-1] * n_inspections[-2]
+)
 
 # Part 2
-
+# The worry levels quickly becomes too large to be computationally feasible.
+# However, we can utilise the fact that all divisors are coprime and calculate
+# the worry-level modulo the lowest common multiple (LCM) to make sure that
+# the worry level never increases above LCM. This is a result of The Chinese
+# Remainder Theorem. Since our checks are only using remainders, we can use this
+# operation which affects all operations equally, without affecting the end
+# result.
 LCM = reduce(lambda x, y: x * y, [m.test for m in monkeys])
 
 
@@ -88,4 +91,7 @@ for i in range(10000):
 n_inspections = [m.n_inspect for m in monkeys]
 n_inspections.sort()
 n_inspections
-print("Amount of monkey business:", n_inspections[-1] * n_inspections[-2])
+print(
+    "Amount of monkey business after 10000 rounds:",
+    n_inspections[-1] * n_inspections[-2],
+)

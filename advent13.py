@@ -34,4 +34,23 @@ test = []
 for i, (a, b) in enumerate(data):
     if compare(eval(a), eval(b)) < 0:
         test.append(i + 1)
-print(sum(test))
+print(
+    "Determine which pairs of packets are already in the right order. What is the sum of the indices of those pairs?",
+    sum(test),
+)
+
+# Part 2
+# We can use an old style compare function to sort the list and then identify
+# of the two nodes of interest
+from functools import cmp_to_key
+
+data_list = [eval(e) for e in data for e in e]
+data_list.append([[2]])
+data_list.append([[6]])
+
+data_list.sort(key=cmp_to_key(compare))
+
+print(
+    "What is the decoder key for the distress signal?",
+    (data_list.index([[2]]) + 1) * (data_list.index([[6]]) + 1),
+)

@@ -103,7 +103,7 @@ while path_blocked is False:
     sy = src[1]
 
     while True:
-        if sy == y_limit + 2:
+        if sy == y_limit + 1:
             break
         # Check if the next position below is vacant
         elif (sx, sy + 1) not in all_cords and (sx, sy + 1) not in sand_coords:
@@ -137,4 +137,4 @@ ax.scatter(
 )
 ax.invert_yaxis()
 
-print("Number of sand units, before the source is blocket:", len(sand_coords) - 1)
+print("Number of sand units, before the source is blocket:", len(sand_coords))

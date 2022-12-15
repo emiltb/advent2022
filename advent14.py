@@ -15,8 +15,14 @@ for c in coords:
             nx = c[i + 1][0]
             ny = c[i + 1][1]
             all_cords.add((x, y))
-            [all_cords.add((new_x, y)) for new_x in range(min([x, nx]), max([x, nx]))]
-            [all_cords.add((x, new_y)) for new_y in range(min([y, ny]), max([y, ny]))]
+            [
+                all_cords.add((new_x, y))
+                for new_x in range(min([x, nx]), max([x, nx]) + 1)
+            ]
+            [
+                all_cords.add((x, new_y))
+                for new_y in range(min([y, ny]), max([y, ny]) + 1)
+            ]
 
 src = (500, 0)
 
@@ -27,16 +33,18 @@ y_limit = max([y for (x, y) in all_cords])
 
 last_path = []
 
-
-while bottom_reached is False:
+path_blocked = False
+while path_blocked is False:
     # Create a new unit of sand
     sx = src[0]
     sy = src[1] + 1
-    next_is_vacant = True
 
-    while next_is_vacant:
+    while True:
+        if sy == y_limit:
+            path_blocked = True
+            break
         # Check if the next position below is vacant
-        if (sx, sy + 1) not in all_cords and (sx, sy + 1) not in sand_coords:
+        elif (sx, sy + 1) not in all_cords and (sx, sy + 1) not in sand_coords:
             sy += 1
         elif (sx - 1, sy + 1) not in all_cords and (sx - 1, sy + 1) not in sand_coords:
             sy += 1
@@ -45,17 +53,12 @@ while bottom_reached is False:
             sy += 1
             sx += 1
         else:
-            next_is_vacant = False
-            sand_coords.add((sx, sy))
-
-        if len(sand_coords) == 97 and next_is_vacant == True:
-            last_path.append([sx, sy])
-
-        if sy == y_limit:
-            bottom_reached = True
             break
 
-print(len(sand_coords))
+    sand_coords.add((sx, sy))
+
+
+print("Number of sand units, before the first one falls forever:", len(sand_coords)-1)
 
 fig = plt.figure(figsize=(20 / 2.53, 20 / 2.54), dpi=150)
 ax = plt.axes()
@@ -70,12 +73,11 @@ ax.scatter(
     marker="s",
     c="orange",
 )
-ax.scatter(
-    [x[0] for x in last_path],
-    [x[1] for x in last_path],
-    s=1,
-    marker="s",
-    c="cyan",
-)
+# ax.scatter(
+#     [x[0] for x in last_path],
+#     [x[1] for x in last_path],
+#     s=1,
+#     marker="s",
+#     c="cyan",
+# )
 ax.invert_yaxis()
-last_path

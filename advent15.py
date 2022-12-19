@@ -1,11 +1,24 @@
 import re
-from functools import reduce
-def overlaps(a,b):
-    # Returns true if a and b overlaps
-    return max([a[0],b[0]]) <= min([a[1],b[1]])
+
+
+def merge_ranges(intervals):
+    # Sort the array on the basis of start values of intervals.
+    intervals.sort()
+    ranges = []
+    # Insert first interval into stack
+    ranges.append(intervals[0])
+    for i in intervals[1:]:
+        # If the next interval overlaps, modify the endpoint
+        if ranges[-1][0] <= i[0] <= ranges[-1][-1]:
+            ranges[-1][-1] = max(ranges[-1][-1], i[-1])
+        else:
+            ranges.append(i)
+
+    return ranges
+
 
 data = [
-    [int(n) for n in re.findall("[\d]+", s)]
+    [int(n) for n in re.findall("-?[\d]+", s)]
     for s in open("inputs/input15.txt").read().strip().splitlines()
 ]
 
@@ -19,59 +32,45 @@ for s, b in zip(sensors, beacons):
     dist = abs(s[0] - b[0]) + abs(s[1] - b[1])
 
     min_y, max_y = s[1] - dist, s[1] + dist
-    if min_y < y_target < max_y:
+    if min_y <= y_target <= max_y:
         dist_x = dist - abs(y_target - s[1])
         min_x, max_x = s[0] - dist_x, s[0] + dist_x
-        x_ranges.append([min_x,max_x])
+        x_ranges.append([min_x, max_x])
 
-#xvals = set()
-#for (x1,x2) in x_ranges:
-#    for x in range(x1,x2):
-#        xvals.add(x)
+total_range = merge_ranges(x_ranges)
 
-#print(len(xvals))
+print(
+    "In the row where y=2000000, how many positions cannot contain a beacon?",
+    [r[1] - r[0] for r in total_range][0],
+)
 
-print(overlaps(x_ranges[0],x_ranges[1]))
-def merge_ranges(x1,x2):
-    if type(x1[0]) == list:
-        return merge_ranges(x1[0],x1[1])
-    if type(x2[0]) == list:
-        return merge_ranges(x2[0],x2[1])
-    if overlaps(x1,x2):
-        return [min(x1[0],x2[0]),max(x1[1],x2[1])]
-    else:
-        return [x1,x2]
+# Part 2
+# Look for the beacon at all x and y from 0 to 4000000
 
-print(x_ranges[0], x_ranges[1])
-print(merge_ranges(x_ranges[0], x_ranges[1]))
+lim = 4000000
 
-total_range = reduce(merge_ranges, x_ranges)
-print(total_range[1] - total_range[0])
+for y in range(lim + 1):
+    x_r = []
 
-total_range = reduce(merge_ranges, [[0,10],[17,20],[5,15]])
-print(total_range)
+    for (sx, sy), (bx, by) in zip(sensors, beacons):
+        dist = abs(sx - bx) + abs(sy - by)
+        dist_x = dist - abs(y - sy)
 
-def mergeIntervals(intervals):
-    # Sort the array on the basis of start values of intervals.
-    intervals.sort()
-    stack = []
-    # insert first interval into stack
-    stack.append(intervals[0])
-    for i in intervals[1:]:
-    # Check for overlapping interval,
-        # if interval overlap
-        if stack[-1][0] <= i[0] <= stack[-1][-1]:
-            stack[-1][-1] = max(stack[-1][-1], i[-1])
-        else:
-            stack.append(i)
+        if dist_x < 0:
+            continue
 
-    print("The Merged Intervals are:", end=" ")
-    for i in range(len(stack)):
-        print(stack[i], end=" ")
+        min_x, max_x = sx - dist_x, sx + dist_x
 
-arr = [[6,8],[1,9],[2,4],[4,7]]
-print(arr)
-print(mergeIntervals(arr))
-arr = [[0,10],[17,20],[5,15]]
-print(arr)
-print(mergeIntervals(arr))
+        x_r.append([min_x, max_x])
+
+    x_r = merge_ranges(x_r)
+
+    x = 0
+    for lo, hi in x_r:
+        if x < lo:
+            print(f"Beacon at x={x}, y={y}")
+            print("What is its tuning frequency?", x * 4000000 + y)
+            break
+        x = max(x, hi + 1)
+        if x > lim:
+            break
